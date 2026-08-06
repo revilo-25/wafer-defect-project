@@ -1,12 +1,4 @@
-"""
-Phase 2: Multi-label defect classification.
 
-Real wafers can show overlapping defect signatures (e.g. edge-ring AND
-scratch on the same wafer). Treating this as single-label throws away
-information and can't represent compound failure modes. We reframe as
-multi-label (sigmoid output per class + BCE-based loss) and use focal
-loss to keep rare classes from being swamped by "None".
-"""
 import numpy as np
 import torch
 import torch.nn as nn
