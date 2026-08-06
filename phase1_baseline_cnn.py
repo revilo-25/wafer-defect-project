@@ -1,14 +1,4 @@
-"""
-Phase 1: Baseline single-label CNN classifier.
 
-Note on "lot leakage": in the REAL WM-811K dataset, wafers are grouped by
-lot ID. If two wafers from the same lot end up in train and test, the model
-can partially "cheat" by learning lot-specific noise rather than the defect
-pattern itself. The real dataset's lotName column should be used with
-GroupShuffleSplit. Our synthetic data has no lot structure, so we use
-stratified splitting here — but the code below is written so that swapping
-in GroupShuffleSplit (real data) is a one-line change (see comment).
-"""
 import os
 import numpy as np
 import torch
@@ -116,10 +106,7 @@ def train_baseline(epochs=8, batch_size=64, lr=1e-3):
     y_idx, class_to_idx = prepare_single_label(X, y)
     print(f"Data source: {source}")
 
-    # NOTE: for REAL data, replace this with GroupShuffleSplit on lotName:
-    #   from sklearn.model_selection import GroupShuffleSplit
-    #   splitter = GroupShuffleSplit(test_size=0.2, n_splits=1)
-    #   train_idx, test_idx = next(splitter.split(X, y_idx, groups=lot_ids))
+   
     X_train, X_test, y_train, y_test = train_test_split(
         X, y_idx, test_size=0.2, stratify=y_idx, random_state=42
     )
