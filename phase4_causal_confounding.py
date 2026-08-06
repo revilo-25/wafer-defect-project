@@ -1,21 +1,4 @@
-"""
-Phase 4: Correlation vs. causation in fab root-cause analysis.
 
-Real-world motivation: engineers see a sensor reading correlated with yield
-loss and want to "fix" that sensor. But in a fab, tool maintenance schedules,
-shift changes, and recipe updates all create confounders - variables that
-influence BOTH the sensor reading and the yield outcome, making the sensor
-look causal when it isn't.
-
-This script builds a small synthetic causal system with a KNOWN ground truth
-(so we can prove which method gets it right), then shows:
-  1. Naive correlation flags the WRONG variable as the root cause.
-  2. Stratifying / adjusting for the confounder recovers the TRUE cause.
-
-This is deliberately simple statistics (not a new causal-discovery algorithm)
-- the point of this phase is demonstrating causal REASONING, which is a rarer
-and more hireable skill in fab data science than another classifier.
-"""
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -24,17 +7,7 @@ RNG = np.random.default_rng(7)
 
 
 def simulate_fab_data(n=5000):
-    """
-    Ground truth causal graph:
-        ToolMaintenance (confounder, unobserved-ish) -> ChamberTemp
-        ToolMaintenance -> YieldLoss
-        ChamberTemp -> YieldLoss   is FALSE (no real edge) -- it's a decoy
-        EtchTime -> YieldLoss      is the TRUE root cause
-
-    A naive analyst who only looks at correlation will see ChamberTemp
-    correlated with YieldLoss (via the confounder) and wrongly blame
-    ChamberTemp, missing EtchTime, the actual cause.
-    """
+  
     # ToolMaintenance: 0 = freshly maintained, 1 = overdue maintenance
     tool_overdue = RNG.binomial(1, 0.3, n)
 
