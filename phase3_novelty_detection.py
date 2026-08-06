@@ -1,15 +1,4 @@
-"""
-Phase 3: Unsupervised novelty detection via autoencoder.
 
-Real-world motivation: labeled defect taxonomies are never complete. New
-tools, new process recipes, and new failure modes appear that no one has
-labeled yet. Rather than only classifying into known classes, we train an
-autoencoder on "None" (normal) wafers only, then flag high reconstruction
-error on unseen wafers as candidates for "novel" defect types - even ones
-not in our 8 known classes. This is the unsupervised complement to Phase 2's
-supervised classifier, and it's how real fabs catch signatures nobody
-labeled yet.
-"""
 import numpy as np
 import torch
 import torch.nn as nn
