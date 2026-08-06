@@ -51,10 +51,10 @@ wafer-defect-project/
 
 ## Figures
 
-![Class distribution](figures/class_distribution.png)
-![Confusion matrix](figures/confusion_matrix.png)
-![Per-class F1](figures/per_class_f1.png)
-![Sample wafer maps](figures/sample_wafers.png)
+![Class distribution](class_distribution.png)
+![Confusion matrix](confusion_matrix.png)
+![Per-class F1](per_class_f1.png)
+![Sample wafer maps](sample_wafers.png)
 
 All four figures below are from the real WM-811K dataset.
 
