@@ -1,12 +1,4 @@
-"""
-Unified loader. If data/WM811K.pkl exists (real Kaggle dataset), loads it.
-Otherwise falls back to the synthetic generator so the pipeline is always runnable.
 
-To use the REAL dataset:
-1. Download from https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map
-2. Place the .pkl file at data/WM811K.pkl
-3. Re-run - this loader auto-detects it, no other code changes needed.
-"""
 import os
 import sys
 import pickle
@@ -18,12 +10,7 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "WM811K.pkl")
 
 
 def _patch_legacy_pandas_modules():
-    """The WM-811K pkl was created with a very old pandas version, whose
-    internal module layout (e.g. pandas.indexes -> pandas.core.indexes) has
-    since changed. This aliases the old paths to the CURRENT submodule that
-    actually contains each class (RangeIndex, Index, etc.), so pickle.load
-    can resolve them without needing to install an ancient pandas version.
-    Each alias is attempted independently since exact submodule layout
+   
     varies across pandas versions (some don't have e.g. indexes.numeric)."""
     alias_map = {
         "pandas.indexes.base": "pandas.core.indexes.base",
@@ -39,11 +26,7 @@ def _patch_legacy_pandas_modules():
         except ImportError:
             pass  # this submodule doesn't exist in the installed pandas version - skip
 
-    # If a NEW class lookup still fails (different AttributeError, different
-    # class name), the fix is the same pattern: find which current pandas
-    # submodule defines that class, then add an entry to alias_map above:
-    #   "pandas.indexes.<name>": "pandas.core.indexes.<wherever it lives now>"
-    # Send Claude the exact error and it'll add the right line.
+   
 
 
 def _resize_to_standard(wafer, size=WAFER_SIZE):
@@ -54,12 +37,7 @@ def _resize_to_standard(wafer, size=WAFER_SIZE):
 
 
 def load_wafer_data(n_samples=6000, seed=42, use_real_if_available=True):
-    """
-    Returns:
-        X: (N, H, W) uint8 array, values {0=no die, 1=pass, 2=fail}
-        y: list of label-lists (multi-label), e.g. [['Edge-Ring'], [], ['Scratch','Local']]
-        source: 'real' or 'synthetic'
-    """
+   
     if use_real_if_available and os.path.exists(DATA_PATH):
         print(f"Loading REAL WM-811K data from {DATA_PATH}")
         _patch_legacy_pandas_modules()
@@ -88,12 +66,6 @@ def load_wafer_data(n_samples=6000, seed=42, use_real_if_available=True):
 
         n_total = len(df)
         if n_samples is not None and n_samples < n_total:
-            # Naive random sampling is a bad idea here: defects are only ~3%
-            # of the full dataset, so a small random sample barely contains
-            # any rare classes (e.g. 5 Donut out of 6000). Instead: keep ALL
-            # labeled-defect wafers, and subsample only the "None" (normal)
-            # wafers down to fill the rest of the budget. This gives every
-            # phase enough rare-class examples to actually learn from.
             df["_label"] = df["failureType"].apply(_extract_label)
             defect_df = df[df["_label"].notna()]
             none_df = df[df["_label"].isna()]
